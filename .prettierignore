@@ -1,0 +1,8 @@
+.agents
+.specify
+node_modules
+.next
+package-lock.json
+playwright-report
+test-results
+data
