@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 
 type Config = {
   name: string;
@@ -158,6 +159,11 @@ export default function Dashboard() {
   const [filter, setFilter] = useState<"all" | "today" | "upcoming">("all");
   const [today, setToday] = useState(todayISO);
   const [provider, setProvider] = useState<"fake" | "gemini" | null>(null);
+  const busyRef = useRef(busy);
+
+  useEffect(() => {
+    busyRef.current = busy;
+  }, [busy]);
 
   useEffect(() => {
     const timer = window.setInterval(() => setToday(todayISO()), 60000);
@@ -189,7 +195,7 @@ export default function Dashboard() {
       focusable()[0]
     )?.focus();
     function onKey(event: KeyboardEvent) {
-      if (event.key === "Escape" && !busy) {
+      if (event.key === "Escape" && !busyRef.current) {
         setFormMode(null);
         setRescheduling(false);
       }
@@ -221,7 +227,7 @@ export default function Dashboard() {
       document.removeEventListener("keydown", onKey);
       previous?.focus();
     };
-  }, [formMode, rescheduling, busy]);
+  }, [formMode, rescheduling]);
 
   function accept(next: Plan) {
     setPlan(next);
@@ -279,7 +285,7 @@ export default function Dashboard() {
       <aside className="sidebar">
         <Link href="/" className="brand">
           <span className="brand-mark">
-            <Icon kind="book" size={25} />
+            <Image src="/study-budy-logo.png" width={52} height={52} alt="" />
           </span>
           <span>
             Study Budy
@@ -817,7 +823,6 @@ export default function Dashboard() {
                   onChange={(event) => setFromDate(event.target.value)}
                   required
                   disabled={busy}
-                  autoFocus
                   data-initial-focus
                 />
               </label>
@@ -911,7 +916,6 @@ function PlanForm({
               maxLength={120}
               defaultValue={initial?.name}
               placeholder="e.g. Finals, one day at a time"
-              autoFocus
               data-initial-focus
             />
           </label>

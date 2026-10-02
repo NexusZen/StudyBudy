@@ -7,7 +7,6 @@ const config = {
   endDate: "2026-10-07",
   dailyMinutes: 60,
 };
-const headers = { Origin: "http://127.0.0.1:3000" };
 const file = {
   name: "api-notes.txt",
   mimeType: "text/plain",
@@ -16,7 +15,9 @@ const file = {
 
 test("TEST-028 REQ-002,004,016 API create/read/update/status flow persists", async ({
   request,
+  baseURL,
 }) => {
+  const headers = { Origin: new URL(baseURL!).origin };
   const created = await request.post("/api/plans", {
     headers,
     multipart: { config: JSON.stringify(config), file },
@@ -46,7 +47,9 @@ test("TEST-028 REQ-002,004,016 API create/read/update/status flow persists", asy
 
 test("TEST-029 REQ-018,020 rejects malformed upload/request/status and unknown identities", async ({
   request,
+  baseURL,
 }) => {
+  const headers = { Origin: new URL(baseURL!).origin };
   const invalid = await request.post("/api/plans", {
     headers,
     multipart: { config: "{broken", file },

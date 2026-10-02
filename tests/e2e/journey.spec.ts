@@ -13,6 +13,11 @@ test("TEST-026 REQ-001,002,004,015,016,017,022 primary fake-provider journey", a
   await createButton.focus();
   await page.keyboard.press("Enter");
   await expect(page.getByLabel("Plan name", { exact: true })).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await expect(createButton).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.getByLabel("Plan name", { exact: true })).toBeFocused();
   await expect(page.getByText(/demo|fake/i).first()).toBeVisible();
   await page.getByLabel("Plan name", { exact: true }).fill("Biology exam");
   await page.getByLabel("Course / subject", { exact: true }).fill("Biology");

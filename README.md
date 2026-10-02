@@ -38,7 +38,7 @@ Set these values in ignored `.env.local`, then restart the server:
 ```dotenv
 AI_PROVIDER=gemini
 GEMINI_API_KEY=your_private_key
-GEMINI_MODEL=gemini-2.5-flash
+GEMINI_MODEL=gemini-3.5-flash-lite
 DATABASE_PATH=./data/study-budy.sqlite
 ```
 

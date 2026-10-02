@@ -1,0 +1,35 @@
+[
+  {
+    "width": 52,
+    "src": "/_next/image?url=%2Fstudy-budy-logo.png&w=128&q=75",
+    "naturalWidth": 64,
+    "naturalHeight": 64,
+    "height": 52,
+    "viewport": 390,
+    "documentWidth": 390,
+    "workflowCount": 0,
+    "homeCount": 1
+  },
+  {
+    "width": 52,
+    "src": "/_next/image?url=%2Fstudy-budy-logo.png&w=128&q=75",
+    "naturalWidth": 64,
+    "naturalHeight": 64,
+    "height": 52,
+    "viewport": 768,
+    "documentWidth": 768,
+    "workflowCount": 0,
+    "homeCount": 1
+  },
+  {
+    "width": 52,
+    "src": "/_next/image?url=%2Fstudy-budy-logo.png&w=128&q=75",
+    "naturalWidth": 64,
+    "naturalHeight": 64,
+    "height": 52,
+    "viewport": 1440,
+    "documentWidth": 1440,
+    "workflowCount": 0,
+    "homeCount": 1
+  }
+]

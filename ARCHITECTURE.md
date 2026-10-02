@@ -2,6 +2,21 @@
 
 Architecture stage, 2026-10-02. This design targets a local, single-user Node.js web application. It is not a public multi-tenant service.
 
+## BMW DESIGN.md adaptation
+
+For the 2026-10-02 UI refresh, the orchestrator retrieved the BMW reference with `npx --yes getdesign@latest add bmw` and read the resulting root `DESIGN.md` before changing UI code. Source: https://getdesign.md/bmw/design-md. The reference supplies visual tokens; Study Budy's existing application boundaries and study-planning behavior remain the basis of implementation.
+
+| Reference decision                                        | Study Budy application                                                                                               |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| White `#ffffff` canvas and `#f7f7f7` / `#fafafa` surfaces | Dashboard, form and schedule surfaces                                                                                |
+| Corporate blue `#1c69d4`, pressed blue `#0653b6`          | Primary actions, active navigation and visible focus                                                                 |
+| Dark navy `#1a2129` hero                                  | One introductory band with white text                                                                                |
+| Rectangular controls and cards; flat surfaces             | Forms, action buttons, topic cards and progress panels with minimal hairlines and no decorative shadows              |
+| 700 display / 300 body hierarchy                          | Strong headings and light supporting copy using the documented system-font fallback; no licensed BMW font is bundled |
+| 8px spacing base; 80px editorial section rhythm           | Consistent spacing with narrower responsive gutters and stacked mobile content                                       |
+
+The refresh keeps semantic labels, keyboard interaction, provider attribution and existing scheduling/progress data semantics. Automotive imagery, BMW branding and motorsport tricolor accents are unnecessary for a study tool. Development-workflow copy identifies the reference as a development input; it must not imply that Gemini designed this interface or read `DESIGN.md` during material analysis.
+
 ## Boundaries
 
 Next.js App Router serves the React dashboard and Node runtime API routes. Shared Zod schemas define validated public inputs and structured topic output. Server-only modules implement document parsing, the analyzer, persistence and orchestration; the deterministic scheduler has no SDK, network, storage or current-clock dependency. React receives plan data, never environment secrets.

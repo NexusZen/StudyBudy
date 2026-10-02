@@ -60,8 +60,44 @@ const valid = () => [
   },
 ];
 describe("structured AI boundary", () => {
+  it("reports actionable provider errors without disclosing upstream secrets", async () => {
+    for (const [status, code] of [
+      [401, "AI_AUTH_FAILED"],
+      [403, "AI_AUTH_FAILED"],
+      [404, "AI_MODEL_UNAVAILABLE"],
+      [429, "AI_QUOTA_EXCEEDED"],
+      [503, "AI_UNAVAILABLE"],
+      [400, "AI_REQUEST_REJECTED"],
+    ] as const) {
+      const analyzer = new GeminiStudyMaterialAnalyzer(async () => {
+        throw Object.assign(new Error("secret-sentinel upstream request"), {
+          status,
+        });
+      });
+      const result = await analyzer
+        .analyze({ text: "Cells", fileName: "biology.txt" })
+        .catch((error: unknown) => error);
+      expect(result).toMatchObject({ code });
+      expect(result).toMatchObject({ status: status === 400 ? 502 : 503 });
+      expect((result as Error).message.length).toBeGreaterThan(30);
+      expect(String(result)).not.toContain("secret-sentinel");
+    }
+  });
   it("TEST-015 REQ-006,009 normalizes finite fractional estimates upward", () => {
     expect(validateUnits(valid())[0]!.estimatedMinutes).toBe(31);
+  });
+  it("rejects over 200 AI topics at the local validation boundary", async () => {
+    const analyzer = new GeminiStudyMaterialAnalyzer(async () => ({
+      text: JSON.stringify(
+        Array.from({ length: 201 }, (_, i) => ({
+          ...valid()[0],
+          id: `topic-${i}`,
+        })),
+      ),
+    }));
+    await expect(
+      analyzer.analyze({ text: "Cells", fileName: "biology.txt" }),
+    ).rejects.toThrow();
   });
 
   it("TEST-016 REQ-006 rejects missing, malformed, duplicate and unsafe structured output", () => {

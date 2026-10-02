@@ -1,0 +1,42 @@
+{
+  "results": [
+    {
+      "width": 390,
+      "overflow": {
+        "viewport": 390,
+        "document": 390
+      },
+      "initialFocus": true,
+      "modalOverflow": true,
+      "contained": true,
+      "closed": true,
+      "restored": true
+    },
+    {
+      "width": 768,
+      "overflow": {
+        "viewport": 768,
+        "document": 768
+      },
+      "initialFocus": true,
+      "modalOverflow": true,
+      "contained": true,
+      "closed": true,
+      "restored": true
+    },
+    {
+      "width": 1440,
+      "overflow": {
+        "viewport": 1440,
+        "document": 1440
+      },
+      "initialFocus": true,
+      "modalOverflow": true,
+      "contained": true,
+      "closed": true,
+      "restored": true
+    }
+  ],
+  "workflow": "How AI designed this workspace\nDownloaded and read the BMW DESIGN.md reference before this UI refresh.\nMapped its blue actions, white surfaces, navy hero, typography and square controls to Study Budy.\nImplemented the interface from that design guidance, then reviewed and checked the result.\n\nThis describes the development workflow. Gemini analyzes your study material when you create a plan. View the design reference ↗",
+  "empty": "START WITH WHAT YOU HAVE\nA good plan makes room for you.\n\nBring your notes or textbook. Set your deadline and available time.\nStudy Budy will turn them into a day-by-day study schedule.\n\nCreate your first plan\nPDF & TXT materials\nFlexible daily availability\nProgress that stays with you"
+}
