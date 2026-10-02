@@ -2,6 +2,8 @@
 
 Turn study material and limited time into a manageable daily plan. Study Budy extracts topics, assigns sessions within your availability, tracks completed workload, and redistributes unfinished work before your deadline. It is a university software-engineering project with an auditable autonomous development workflow.
 
+Live demo: [study-budy-ruddy.vercel.app](https://study-budy-ruddy.vercel.app/)
+
 ## Features
 
 - Text-based PDF/TXT upload; source references on every session.
