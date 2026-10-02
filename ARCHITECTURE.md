@@ -13,7 +13,7 @@ Dashboard → API validation → Plan service → SQLite repository
                                └→ Pure scheduler → Sessions + overflow warning
 ```
 
-Suggested modules: `src/core/types.ts`, `schemas.ts`, `scheduler.ts`, `progress.ts` and `src/server/documents.ts`, `analyzer.ts`, `repository.ts`, `service.ts`; HTTP handlers under `src/app/api/plans/`. Tests inject a fake analyzer and isolated repositories.
+Actual modules: `src/lib/types.ts`, `schemas.ts`, `scheduler.ts`, `progress.ts`, `documents.ts`, `analyzer.ts`, `repository.ts`, `persisted.ts`, `http.ts`, `errors.ts` and `service.ts`; HTTP handlers under `src/app/api/plans/`. The shared lib directory combines the originally planned core/server folders while preserving pure scheduler and server-integration boundaries. Tests inject a fake analyzer and isolated repositories.
 
 ## Storage and privacy
 
@@ -50,4 +50,3 @@ APIs create/list/retrieve/update plans, update session status and reschedule rem
 ## Verification seams
 
 Pure scheduler tests check conservation, capacity, civil dates, dependency order, overflow and rescheduling. Parser tests exercise actual PDF fixture extraction and malformed files. Analyzer tests stub SDK responses at the boundary and validate schema rejection and prompt separation. Service/repository tests use temp databases and fake analyzers. A browser test exercises creation through completion with demo mode. Independent reviewers and final verification are separate roles from this architect and implementation.
-

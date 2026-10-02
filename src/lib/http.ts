@@ -66,10 +66,18 @@ export async function handle(fn: () => Promise<unknown>, status = 200) {
 export function checkOrigin(request: Request) {
   const origin = request.headers.get("origin");
   const url = new URL(request.url);
-  const host = request.headers.get('host') ?? url.host;
+  const host = request.headers.get("host") ?? url.host;
   let matches = !origin;
   if (origin) {
-    try { const source = new URL(origin); matches = source.host === host && source.protocol === url.protocol && source.origin === origin; } catch { matches = false; }
+    try {
+      const source = new URL(origin);
+      matches =
+        source.host === host &&
+        source.protocol === url.protocol &&
+        source.origin === origin;
+    } catch {
+      matches = false;
+    }
   }
   if (!matches)
     throw new AppError(

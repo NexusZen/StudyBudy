@@ -33,3 +33,18 @@ Fake uses lines.slice(0,12) and title.slice(0,160) without warning; source mater
 Structured output validates IDs, workload, finite bounds and dependency graph; prompt separates untrusted data from system instructions with empty tools. SDK key remains server-side; live provider failures do not fallback. Upload filenames are never paths; request-body bounds and cross-site origin checks are present. Civil dates are UTC and initial schedule preserves capacity/overflow. SQLite mutations serialize and attempt rollback on failed file replacement; however direct persistence failure/restart tests are still required. These observations are source inspection, not a full executable security guarantee.
 
 Result:4 open findings routed to orchestrator Fix Agent before any corrections. Next stage: recorded fixes and new regressions, QA, independent re-review and separate final verification. Build/lint/typecheck were not run by this reviewer and are not claimed here.
+
+## Independent re-review after FIX-004–010
+
+Date:2026-10-02 Asia/Dhaka. Same reviewer, separate post-fix stage. Read actual changed scheduler/documents/persisted/repository/analyzer/http code, corrected review regressions and SQLite tests, README/UI demo disclosures, and fix ledger. No application edits.
+
+Executed `npm test -- --run tests/review-probes.test.ts tests/repository.test.ts tests/scheduler.test.ts tests/documents.test.ts` with approved worker execution. Actual result:4 files passed,20 tests passed,3.13s. Tests include blank PDF rejection, retained future prerequisite overflow, SQLite reopen/concurrent status mutation/failed-rename rollback, and scheduling/parser regressions. The Vite config warning remains informational; no failing tests in this run.
+
+| Finding | Correction reviewed                                                                                                                                                                          | Re-review status |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| R-001   | FIX-004 uses actual page.text, omits synthetic counters; TEST-036 rejects valid blank PDF; happy PDF still passes                                                                            | RESOLVED         |
+| R-002   | FIX-005 constrains new dependent dates by max preserved/new prerequisite date; TEST-035 preserves completion and reports dependent overflow                                                  | RESOLVED         |
+| R-003   | FIX-006 validates SQLite reads/writes via full Zod plan schema, unit graph/session identities and workload/progress accounting; TEST-032–034 prove reopen/concurrency/failed-rename recovery | RESOLVED         |
+| R-004   | FIX-007 explicitly discloses first12nonempty lines/45minutes/160character titles both before upload and in dashboard, plus README                                                            | RESOLVED         |
+
+Additional source inspection: FIX-009 uses received Host and protocol for same-origin comparison, retains malformed/cross-site rejection; FIX-010 explicitly locates named input for initial modal focus. Browser validation of these belongs to QA/final verifier; this reviewer did not execute browser checks in this re-review. Source paths src/lib remain equivalent modular arrangement to design. No new blocking code/security finding identified in reviewed changes. This concludes review convergence for four recorded findings; independent final executable verification remains required. Live Gemini credentials/API remain unexecuted and are not represented as verified here.

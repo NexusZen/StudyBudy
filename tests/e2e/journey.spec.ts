@@ -43,7 +43,13 @@ test("TEST-026 REQ-001,002,004,015,016,017,022 primary fake-provider journey", a
   await expect(
     page.getByRole("progressbar", { name: "Study completion" }),
   ).toHaveAttribute("aria-valuenow", "0");
+  const saved = page.waitForResponse(
+    (response) =>
+      response.url().endsWith("/sessions") &&
+      response.request().method() === "PATCH",
+  );
   await status.selectOption("completed");
+  expect((await saved).status()).toBe(200);
   await expect(status).toHaveValue("completed");
   await expect
     .poll(async () =>
