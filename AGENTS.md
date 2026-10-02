@@ -1,0 +1,2 @@
+# Study Budy agents
+Read the constitution and specification. Separate subagents own specification, architecture, test design, independent review and final verification. Orchestrator may execute implementation, QA and fix integration as recorded stages. Reviewers record findings before fixes. Reports preserve actual evidence. Never invent tool usage or results. No live AI in tests. Keys server-side. Use Study Budy spelling.

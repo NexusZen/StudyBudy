@@ -1,0 +1,61 @@
+# Study Budy specification
+
+Feature: `001-study-budy`  
+Date: 2026-10-02 (Asia/Dhaka)  
+Owner: Requirements / Specification Agent  
+Status: Baseline for architecture and tests; user authorized autonomous clarification by documented assumptions.
+
+## Personas and journeys
+
+**Student:** has notes/textbooks, an exam deadline, and limited daily time. Creates a named subject plan, uploads material, configures availability, sees extracted topics and a daily schedule, updates session status, and reschedules unfinished sessions.
+
+**Instructor/reviewer:** reads requirements, tasks, tests, review findings, corrections, and command evidence to evaluate both application correctness and autonomous engineering process.
+
+**Developer:** installs locally without credentials, runs deterministic tests, then configures Gemini to exercise live semantic extraction.
+
+## Functional requirements
+
+| ID | Requirement |
+|---|---|
+| REQ-001 | Display the exact product name **Study Budy** consistently in UI, documentation, and metadata. |
+| REQ-002 | Create a plan with nonempty bounded name and subject, material, inclusive start/end dates, and daily availability. Retrieve persisted plans after restart and update planning settings without losing progress. |
+| REQ-003 | Accept bounded text-based PDF and UTF-8 TXT uploads; validate allowed type, size, content, and readable extracted text. Reject unsupported, empty, corrupt, encrypted/image-only, and oversized documents with clear errors. |
+| REQ-004 | Convert readable material to structured study units through one analyzer interface with a Gemini implementation and an explicit fake implementation for offline tests/demo. UI/API identify the provider used; live errors never silently fall back to fake analysis. |
+| REQ-005 | Execute Gemini calls only on the server using configured credentials and an official supported SDK. Gemini extracts semantic topics, structure, prerequisites and workload metadata; it cannot execute tools or directly change application state/calendar. |
+| REQ-006 | Validate structured analyzer output before persistence/scheduling: bounded topic count/text, unique IDs, nonempty titles, positive finite estimates, optional bounded difficulty/importance, safe prerequisites and source metadata. Reject malformed/missing required values, empty output and service failures gracefully. |
+| REQ-007 | Retain trustworthy source filename/reference and optional chapter/section/page information on units and sessions. Do not invent page numbers. Missing optional metadata uses documented defaults or remains absent. |
+| REQ-008 | Validate actual ISO calendar dates; reject impossible dates/end-before-start and bounded-range violations. Calendar calculations must not shift dates across timezones or DST. |
+| REQ-009 | Support default daily capacity, distinct weekday capacities, and explicit unavailable dates (zero capacity/rest days). Reject negative/nonfinite/out-of-range capacities; normalize fractional workload to whole minutes using documented rounding. |
+| REQ-010 | Generate the same schedule for identical normalized input using a deterministic local scheduling algorithm. Explain ordering, difficulty/priority effects, revision and buffer policy in architecture/UI documentation. |
+| REQ-011 | Never exceed any day's capacity or assign new sessions outside the inclusive requested range. Zero-capacity dates receive no new sessions. Support single-day plans. |
+| REQ-012 | Split topics larger than daily capacity into positive-duration sessions. Preserve exactly all normalized study workload, without lost or duplicated minutes. |
+| REQ-013 | Respect resolvable prerequisite ordering and topic sequence; use documented stable priority/difficulty tie breaking. Reject cycles/dangling prerequisite IDs or otherwise explicitly surface a documented normalization policy. |
+| REQ-014 | When time is insufficient/zero, explicitly warn and expose all unscheduled workload; do not silently drop work, overbook days, or claim feasibility. |
+| REQ-015 | Show a professional accessible dashboard: current plan, daily sessions, source references, estimated minutes, deadline, today's and upcoming tasks, completion percent, completed minutes and remaining workload including unscheduled minutes. |
+| REQ-016 | Persist session statuses Not Started, In Progress, and Completed. Progress is workload-weighted; only completed minutes count as completed. Status changes validate plan/session identity. |
+| REQ-017 | Reschedule remaining work from a selected date through the existing deadline using updated availability. Preserve completed session identity/date/status/minutes, redistribute unfinished plus unscheduled workload only on remaining dates, and show infeasibility warnings. No completed work is duplicated. |
+| REQ-018 | Provide clear validation/service/storage errors, loading states, empty states and recovery options. Invalid requests must not create partial/corrupt plans; invalid rescheduling must leave the previous schedule intact. |
+
+## Non-functional and engineering requirements
+
+| ID | Requirement |
+|---|---|
+| REQ-019 | Treat uploaded content as untrusted data. Separate system extraction instructions from quoted material; request only structured extraction, permit no model tools, validate the result, and safely render all user/model text. |
+| REQ-020 | Protect credentials; server-only key usage, ignored local environment/storage artifacts, placeholder `.env.example`, no committed secrets. Validate all HTTP/storage inputs and reject malicious filenames without using them as filesystem paths. |
+| REQ-021 | Minimize retained data: transient upload processing, no unnecessary original bytes or extracted text retention, documented local storage and Gemini transmission, no unnecessary personal data. Bound document text/model response processing rather than silently truncating material. |
+| REQ-022 | Provide semantic labels, keyboard operation, visible focus, readable contrast, status feedback, and usable responsive layout for the primary journey. |
+| REQ-023 | Provide meaningful deterministic automated scheduler, material, analyzer, API, progress, rescheduling, malformed-input/security and practical UI/E2E tests; tests make no paid live Gemini calls. |
+| REQ-024 | Preserve constitution, role definitions, spec, acceptance, architecture/plan/tasks/test strategy, stage reports, independent review findings, failures/fixes/rechecks, final traceability and independent executable verification. Give IDs to tasks/tests/findings/fixes and meaningful Git checkpoints where possible. |
+| REQ-025 | Document exact installation/run/test/Gemini commands, real tooling availability/use and substitutions, algorithm, storage/privacy, limitations and actual verification results. Applicable no-mistakes workflow and Spec Kit initialization are attempted/documented without fabricated usage. |
+
+## Clarified scope and edge cases
+
+Rescheduling is included, although the original request described it as optional. Availability may be zero to deliberately express rest days; a wholly zero-capacity plan produces an explicit infeasibility result. A completed session remains historical even before the rescheduling start. In Progress has no partial-minute accounting: its entire duration is still unfinished. A topic split into three sessions contributes each session's own minutes exactly once.
+
+Revision/buffer time may reduce capacity or create explicitly typed sessions; architecture must state the actual policy and prevent hidden double counting. No requirement promises globally optimal spacing or learning outcomes. Large materials are supported within announced upload/text/topic bounds; bounds must be visible and never silently discard input.
+
+Optional exam date equals the plan deadline in this release. Student confidence, separate course priority, rich annotation, multiple-user accounts, OCR, DOCX, calendar export, and notification delivery are non-goals. Basic topic importance comes from validated analysis. Persistent storage technology and framework are architecture decisions, with deviations from the recommended stack documented.
+
+## Definition of done
+
+All mandatory requirements map to actual code/evidence or an explicitly identified unmet limitation. Core local fake-mode journey and server Gemini adapter exist. Full checks run with real recorded results; independent review routes findings to correction and is followed by independent final verification. Live Gemini integration is reported as unverified when no credential/live execution is available, even if its adapter and mocked contract tests pass.
