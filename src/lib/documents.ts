@@ -40,27 +40,46 @@ export async function extractDocument(file: Upload) {
   if (bytes.byteLength > MAX_FILE_SIZE)
     throw new AppError("FILE_TOO_LARGE", "Upload limit is 5 MiB.", 413);
   let text: string;
-  try {
-    if (ext === "txt") {
+  if (ext === "txt") {
+    try {
       text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
-      if (text.includes("\0")) throw new Error("binary text");
-    } else {
-      if (new TextDecoder().decode(bytes.subarray(0, 5)) !== "%PDF-")
-        throw new Error("bad signature");
-      const { PDFParse } = await import("pdf-parse");
+      if (text.includes("\0")) throw new Error("binary");
+    } catch {
+      throw new AppError(
+        "EXTRACTION_FAILED",
+        "Could not read this file as UTF-8 text. Make sure it is a plain .txt file.",
+      );
+    }
+  } else {
+    // Validate the PDF magic bytes before attempting to parse
+    if (new TextDecoder().decode(bytes.subarray(0, 5)) !== "%PDF-")
+      throw new AppError(
+        "EXTRACTION_FAILED",
+        "The file does not appear to be a valid PDF. Make sure you are uploading an actual PDF, not a Word document or image renamed to .pdf.",
+      );
+    try {
+      const { PDFParse, PasswordException } = await import("pdf-parse");
       const parser = new PDFParse({ data: bytes });
       try {
         const parsed = await parser.getText();
         text = parsed.pages.map((page) => page.text).join("\n");
+      } catch (innerErr) {
+        if (innerErr instanceof PasswordException)
+          throw new AppError(
+            "EXTRACTION_FAILED",
+            "This PDF is password-protected. Remove the password protection and re-upload.",
+          );
+        throw innerErr;
       } finally {
         await parser.destroy();
       }
+    } catch (err) {
+      if (err instanceof AppError) throw err;
+      throw new AppError(
+        "EXTRACTION_FAILED",
+        "Could not read this PDF. Use an unencrypted text-based PDF (not a scanned image PDF); scanned PDFs require OCR first.",
+      );
     }
-  } catch {
-    throw new AppError(
-      "EXTRACTION_FAILED",
-      "Could not read this document. Use an unencrypted text-based PDF or UTF-8 TXT; scanned PDFs require OCR.",
-    );
   }
   text = text.trim();
   if (!text || !/[\p{L}\p{N}]/u.test(text))
